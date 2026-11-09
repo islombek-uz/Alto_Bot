@@ -1,6 +1,7 @@
 import os
 import logging
 from aiogram import Bot, Dispatcher, types
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.filters import Command
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -11,13 +12,15 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ADMIN_ID = os.getenv("ADMIN_ID")
+TELEGRAM_PROXY = os.getenv("TELEGRAM_PROXY")
 
 # Проверка наличия токена
 if not BOT_TOKEN:
     raise ValueError("Не найден BOT_TOKEN в переменных окружения!")
 
 # Инициализация бота и диспетчера
-bot = Bot(token=BOT_TOKEN)
+session = AiohttpSession(proxy=TELEGRAM_PROXY) if TELEGRAM_PROXY else None
+bot = Bot(token=BOT_TOKEN, session=session)
 dp = Dispatcher()
 
 # Настройка клиента OpenRouter (используем базовый URL OpenRouter)
